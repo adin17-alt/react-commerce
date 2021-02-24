@@ -4,6 +4,7 @@ import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import Products from './components/Products'
 import NavBar from './components/NavBar'
 import Footer from './components/Footer'
+import Basket from './components/Basket'
 
 const App = () => {
   const [products, setProducts] = useState([])
@@ -29,6 +30,21 @@ const App = () => {
     setBasketData(response.cart)
   }
 
+  const updateProduct = async (productId, quantity) => {
+    const response = await commerce.cart.update(productId, {quantity})
+    setBasketData(response.cart)
+  }
+
+  const handleEmptyBasket = async (productId, quantity) => {
+    const response = await commerce.cart.empty()
+    setBasketData(response.cart)
+  }
+
+  const RemoveItemFromBasket = async (itemId) => {
+    const response = await commerce.cart.remove(itemId)
+    setBasketData(response.cart)
+  }
+
   return (
     <Router>
       <div>
@@ -36,6 +52,14 @@ const App = () => {
         <Switch>
           <Route exact path="/">
             <Products products={products} addProduct={addProduct}/>
+          </Route>
+          <Route exact path="/basket">
+            <Basket
+              basketData={basketData}
+              updateProduct={updateProduct}
+              handleEmptyBasket={handleEmptyBasket}
+              RemoveItemFromBasket={RemoveItemFromBasket}
+            />
           </Route>
         </Switch>
         <Footer />
